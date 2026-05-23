@@ -1,0 +1,3 @@
+enable=all
+# Style-only noise: existing codebase uses bare $vars, `[ ]`, omits default case.
+disable=SC2250,SC2249,SC2292,SC2310,SC2311,SC2312

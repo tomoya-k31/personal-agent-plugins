@@ -5,7 +5,20 @@
       "mcp__exa__*"
     ]
   },
-  "hooks": {},
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/check-plugin-version-bump.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "plugin-dev@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
