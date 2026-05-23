@@ -68,9 +68,15 @@ All of the above are installed on this dev machine (via Homebrew / mise). No nee
 
 `interaction-logger` writes one JSONL file per day at `~/.claude/logs/interactions-YYYY-MM-DD.jsonl`. Daily rotation, no size cap, no automatic pruning — the user manages cleanup manually. The directory is gitignored via `.gitignore` (`.claude/logs/`). Schema: one event per line with `event` ∈ {`user_prompt`, `ai_offered_options`, `user_selected_option`, `permission_request`, `tool_executed`, `permission_denied`, `ai_response_end`}, plus `ts` (ISO-8601 UTC), `session_id`, `cwd`. See `plugins/interaction-logger/README.md` for full field reference.
 
-## MCP servers (development only)
+## MCP servers
 
-`.mcp.json` declares `brave-search`, `exa`, and `context7` for **development on this repo**, not for the published plugins. They require the following env vars: `BRAVE_API_KEY`, `EXA_API_KEY`, `CONTEXT7_API_KEY`. If missing, the server fails to start — verify env before assuming an MCP tool is broken. Servers are pulled fresh via `npx -y` each run, no version pinning.
+Two scopes of `.mcp.json` live in this repo — don't conflate them:
+
+- **Repo root `.mcp.json`** — declares `brave-search`, `exa`, `context7` for **development on this repo only** (e.g. running researcher prompts manually, calling Exa/context7 from the main session while editing plugin code). Not shipped to plugin installers.
+- **Per-plugin `plugins/<name>/.mcp.json`** — shipped with the plugin, auto-registered on install. Currently:
+  - `skill-creator-x` ships `exa` (researcher subagent depends on it; `WebSearch` fallback exists) and `context7` (for fast library-doc lookups during Stage 2 research).
+
+Required env vars: `BRAVE_API_KEY`, `EXA_API_KEY`, `CONTEXT7_API_KEY`. If missing, the server fails to start — verify env before assuming an MCP tool is broken. Servers are pulled fresh via `npx -y` each run, no version pinning.
 
 ## Verifying changes
 

@@ -85,9 +85,11 @@ Then restart Claude Code.
 
 - **Python 3** — runs the scripts under `skills/skill-creator-x/scripts/` and
   `skills/skill-creator-x/eval-viewer/`.
-- **Exa MCP server** (optional, used in Stage 2) — only required when the new
-  skill targets a fast-moving domain and current knowledge is stale. Register
-  via your project's `.mcp.json` or globally.
+- **Exa MCP server** (optional, used in Stage 2) — auto-registered via this
+  plugin's `.mcp.json`. Set `EXA_API_KEY` in your environment to enable; if
+  missing, the researcher subagent falls back to `WebSearch`.
+- **context7 MCP server** (optional) — also auto-registered. Set
+  `CONTEXT7_API_KEY` to enable library-doc lookups during research.
 - The Claude Code CLI itself, for the eval loop (`claude --print …` calls in
   `scripts/run_eval.py`).
 
