@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "personal-agent-plugins",
+  "description": "tomoya-k31's personal Claude Code plugin collection",
+  "owner": {
+    "name": "tomoya-k31"
+  },
+  "plugins": [
+    {
+      "name": "interaction-logger",
+      "description": "Log user prompts, AI-presented AskUserQuestion options, the user's selection, and permission-dialog OK/NG decisions to a daily-rotated JSONL file.",
+      "author": {
+        "name": "tomoya-k31"
+      },
+      "category": "observability",
+      "source": "./plugins/interaction-logger"
+    }
+  ]
+}
