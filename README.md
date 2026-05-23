@@ -18,12 +18,18 @@ tomoya-k31 個人の Claude Code プラグインを束ねたマーケットプ�
 │   └── settings.json             # Project-local Claude Code settings (used when working *on* this repo)
 ├── .mcp.json                     # MCP servers used while developing the plugins
 └── plugins/
-    └── interaction-logger/       # See plugin's own README for details
+    ├── interaction-logger/       # See plugin's own README for details
+    │   ├── .claude-plugin/
+    │   │   └── plugin.json
+    │   ├── hooks/
+    │   │   ├── hooks.json
+    │   │   └── log-interactions.sh
+    │   └── README.md
+    └── skill-creator-x/          # See plugin's own README for details
         ├── .claude-plugin/
         │   └── plugin.json
-        ├── hooks/
-        │   ├── hooks.json
-        │   └── log-interactions.sh
+        ├── skills/
+        │   └── skill-creator-x/  # SKILL.md + agents/ assets/ eval-viewer/ references/ scripts/
         └── README.md
 ```
 
@@ -37,6 +43,7 @@ The shape that matters to Claude Code is:
 | Plugin | Category | Description |
 | --- | --- | --- |
 | [`interaction-logger`](plugins/interaction-logger/README.md) | observability | Logs every user prompt, every `AskUserQuestion` option presented and answered, and every permission OK/NG to a daily-rotated JSONL file under `~/.claude/logs/`. |
+| [`skill-creator-x`](plugins/skill-creator-x/README.md) | meta | Manual-invocation-only meta-skill for creating Skills. Adds responsibility judgment (Skill vs MCP vs Subagent vs rules), MCP/Subagent confirmation, and Exa-MCP research stages on top of the official `skill-creator` loop. |
 
 Add new plugins by creating `plugins/<your-plugin>/` and appending an entry to `.claude-plugin/marketplace.json`.
 

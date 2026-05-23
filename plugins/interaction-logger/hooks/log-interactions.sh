@@ -106,7 +106,10 @@ PostToolUse)
         | (.command // .file_path // .url // .pattern // .)
         | tostring
         | .[0:200]
-      )
+      ),
+      exit_code: (.tool_response.exit_code // .tool_response.exitCode // null),
+      interrupted: (.tool_response.interrupted // false),
+      stderr_tail: ((.tool_response.stderr // "") | tostring | .[-500:])
     }'
     ;;
   esac

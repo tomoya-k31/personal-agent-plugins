@@ -1,0 +1,8 @@
+{
+  "name": "skill-creator-x",
+  "version": "0.1.0",
+  "description": "Manual-invocation-only meta-skill for creating Skills. Adds responsibility judgment (Skill vs MCP vs Subagent vs rules), MCP/Subagent confirmation, and Exa-MCP research stages on top of the official skill-creator loop.",
+  "author": {
+    "name": "tomoya-k31"
+  }
+}

@@ -15,7 +15,7 @@ permission-dialog approval/denial — into a daily-rotated JSONL file.
 | `ai_offered_options`   | The AI calls `AskUserQuestion`                        | `PreToolUse` — captures the questions presented  |
 | `user_selected_option` | The user answers an `AskUserQuestion`                 | `PostToolUse` — captures the answers             |
 | `permission_request`   | A permission dialog is shown for a tool call          | `PermissionRequest`                              |
-| `tool_executed`        | A permission-required tool actually ran               | Used to infer user said **OK** (see below)       |
+| `tool_executed`        | A permission-required tool actually ran               | Used to infer user said **OK** (see below). Includes `exit_code`, `interrupted`, and `stderr_tail` (last 500 chars) for Bash. |
 | `permission_denied`    | A tool call is denied by the auto-mode classifier     | `PermissionDenied`                               |
 | `ai_response_end`      | The AI finished a response                            | `Stop` — captures last assistant text (≤2000 chars) so terse follow-ups ("2", "yes") can be correlated to the offered choices |
 
@@ -113,6 +113,28 @@ jq -s '
   log entry. It always exits `0`.
 - All paths use `${CLAUDE_PLUGIN_ROOT}` so the plugin is portable across
   installations.
+
+## Analyzing the logs
+
+The plugin ships a companion skill, `analyze-interactions`, at
+`skills/analyze-interactions/`. It runs DuckDB queries over the JSONL logs to:
+
+- **A** — find safe Bash commands that still trigger permission dialogs and
+  propose `permissions.allow` additions (project- or user-scoped, decided from
+  the `cwd` distribution in the logs).
+- **B** — extract recent user prompts and audit them against a
+  goal/criteria/constraints/context/scope rubric.
+- **C** — surface auto-executed discovery commands (`which`, `command -v`,
+  `find /`, …) and failed commands as candidates for a procedure doc.
+
+Each proposed change is shown as a diff and requires per-finding approval via
+`AskUserQuestion`. See `skills/analyze-interactions/SKILL.md` for the workflow
+and `scripts/{allowlist,prompts,procedures}.sql` for the queries. Run a single
+mode by hand with:
+
+```bash
+bash plugins/interaction-logger/skills/analyze-interactions/scripts/run.sh allowlist --since 2026-05-01
+```
 
 ## Hook events used
 
