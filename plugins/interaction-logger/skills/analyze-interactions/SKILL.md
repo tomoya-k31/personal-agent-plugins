@@ -13,6 +13,11 @@ A three-mode analyzer over `~/.claude/logs/interactions-*.jsonl`. Each mode is o
 - `jq` (already required by `interaction-logger`)
 - Logs exist at `~/.claude/logs/interactions-*.jsonl`. If absent, tell the user the plugin isn't wired up or hasn't accumulated data yet.
 
+## Language
+
+- Conversational replies to the user: **Japanese**.
+- Content written into files (settings.json comments, CLAUDE.md sections, commit messages, etc.): match the language already used by the target file or surrounding repo docs. If the target is mixed or empty, fall back to the repo's primary doc language. Do not translate existing entries you're appending to.
+
 ## Workflow
 
 1. **Ask which mode** (unless the user already named one).

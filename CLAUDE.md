@@ -13,6 +13,22 @@ This is a **Claude Code plugin marketplace** (`personal-agent-plugins`), not app
 
 **Always bump `version` in `plugins/<name>/.claude-plugin/plugin.json` after touching anything inside that plugin directory.** Installed plugins are cached at `~/.claude/plugins/cache/<marketplace>/<name>/<version>/` keyed by version string, so leaving the version unchanged causes `auto-update` to skip — clients keep running the stale cached copy even after `git pull`. Bumping the version is what forces refresh. (Past incident: the initial `interaction-logger@0.1.0` install was stuck without the `skills/` directory because subsequent commits never bumped the version.)
 
+### Version resolution order
+
+Claude Code resolves a plugin's cache-key version from the first of these that is set ([plugins-reference docs](https://code.claude.com/docs/en/plugins-reference#version-management)):
+
+1. `plugins/<name>/.claude-plugin/plugin.json` → `version` (highest priority — *plugin.json wins*)
+2. `.claude-plugin/marketplace.json` → `plugins[].version` for that plugin entry (fallback)
+3. Git commit SHA of the plugin source (used only when both above are omitted and the source is git-hosted)
+4. `unknown` (npm sources or local directories not inside a git repo — no auto-update)
+
+Practical rules for this repo:
+
+- We rely on (1) — every plugin sets `version` in its own `plugin.json`, so that's the field to bump.
+- The `marketplace.json` entries in this repo intentionally **do not** declare `version` (see `.claude-plugin/marketplace.json`). If you ever add one, remember it must be bumped too whenever `plugin.json`'s version is bumped — keeping two in sync is error-prone, so prefer leaving the marketplace entry's `version` unset.
+- If you want commit-SHA-driven auto-refresh (no manual bumping), you'd need to **remove `version` from both `plugin.json` and the marketplace entry** for that plugin. We don't do this today, but it's an option for fast-iteration plugins.
+- `marketplace.json` also has a top-level `version` (and `metadata.version` for backward compat) — that is the **marketplace manifest** version, *not* a per-plugin cache key. Bumping it does **not** trigger per-plugin refresh; ignore it for the iteration loop below.
+
 Iteration loop:
 1. Edit files under `plugins/<name>/`.
 2. Bump `plugins/<name>/.claude-plugin/plugin.json` `version` (SemVer; patch bump is fine for most changes).
@@ -45,6 +61,8 @@ The plugins shell out — these must be on PATH for the corresponding feature to
 - `duckdb` (≥1.5) — required by `analyze-interactions` skill (`scripts/run.sh`). Skill fails silently without it.
 - Python 3 — used by `skill-creator-x` scripts (`run_eval`, `aggregate_benchmark`, `package_skill`, `run_loop`, etc.). Invoke as `python -m scripts.<name>` from the skill directory.
 - `gdate` (GNU coreutils) — optional for ms-precision timestamps; falls back to BSD `date` (seconds) on macOS.
+
+All of the above are installed on this dev machine (via Homebrew / mise). No need to `which`-check them per session.
 
 ## Interaction logs
 
