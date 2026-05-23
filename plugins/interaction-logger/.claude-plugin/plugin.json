@@ -1,6 +1,6 @@
 {
   "name": "interaction-logger",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Log user prompts, AskUserQuestion options/answers, and permission OK/NG to JSONL. ユーザのプロンプト、AIが提示した選択肢、選択結果、許可ダイアログでのOK/NG応答をJSONL形式で記録するフック集。",
   "author": {
     "name": "tomoya-k31"
