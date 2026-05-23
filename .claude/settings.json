@@ -1,16 +1,17 @@
 {
-  "enabledPlugins": {
-    "plugin-dev@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true
-  },
-  "hooks": {
-  },
   "permissions": {
     "allow": [
       "Bash(markitdown *)",
       "mcp__exa__*"
     ]
+  },
+  "hooks": {},
+  "enabledPlugins": {
+    "plugin-dev@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "interaction-logger@personal-agent-plugins": true,
+    "skill-creator-x@personal-agent-plugins": true
   }
 }
