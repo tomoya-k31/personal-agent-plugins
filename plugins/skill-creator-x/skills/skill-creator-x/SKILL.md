@@ -2,6 +2,8 @@
 name: skill-creator-x
 description: Manual-invocation-only meta-skill for creating Skills. Adds a pre-flight responsibility judgment (Skill vs MCP vs Subagent vs .claude/rules/), an explicit MCP/Subagent confirmation step, and an Exa-MCP research phase on top of the official skill-creator loop. Invoke explicitly via /skill-creator-x or by naming the skill — it does not auto-trigger.
 disable-model-invocation: true
+model: sonnet
+effort: high
 ---
 
 # Skill Creator X

@@ -1,6 +1,8 @@
 ---
 name: analyze-interactions
 description: Analyze the JSONL logs produced by the interaction-logger plugin to (A) propose new `permissions.allow` entries for safe commands that still trigger permission dialogs, (B) audit recent user prompts for missing prompt-engineering context, and (C) surface auto-executed exploratory or failed commands worth adding to a procedure doc. Use when the user asks to "analyze interaction logs", "audit my prompts", "find allowlist candidates", "review tool-search/discovery commands", or otherwise references the `interaction-logger` log files in `~/.claude/logs/`. DuckDB-based.
+model: sonnet
+effort: medium
 ---
 
 # analyze-interactions
