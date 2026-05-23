@@ -69,7 +69,7 @@ in `~/.claude/settings.json`:
     "personal-agent-plugins": {
       "source": {
         "source": "local",
-        "path": "/Users/tomoya-k31/Workspace/github/tomoya-k31/personal-agent-plugins"
+        "path": "/path/to/personal-agent-plugins"
       }
     }
   },

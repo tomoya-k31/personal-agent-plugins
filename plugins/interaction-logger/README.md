@@ -34,7 +34,7 @@ in a permission dialog. We infer it:
 ## Install
 
 This plugin lives in a local marketplace at
-`/Users/tomoya-k31/Workspace/github/tomoya-k31/personal-agent-plugins`.
+`/path/to/personal-agent-plugins`.
 
 Add the marketplace and enable the plugin in `~/.claude/settings.json`:
 
@@ -44,7 +44,7 @@ Add the marketplace and enable the plugin in `~/.claude/settings.json`:
     "personal-agent-plugins": {
       "source": {
         "source": "local",
-        "path": "/Users/tomoya-k31/Workspace/github/tomoya-k31/personal-agent-plugins"
+        "path": "/path/to/personal-agent-plugins"
       }
     }
   },
@@ -84,7 +84,7 @@ jq -r 'select(.event == "user_prompt") | "\(.ts)  \(.prompt)"' \
 jq -r '.cwd' ~/.claude/logs/interactions-*.jsonl | sort | uniq -c | sort -rn
 
 # Only events from one project
-jq -c 'select(.cwd | startswith("/Users/tomoya-k31/Workspace/github/tomoya-k31/hakoniwa-infra"))' \
+jq -c 'select(.cwd | startswith("/path/to/your-project"))' \
   ~/.claude/logs/interactions-*.jsonl
 
 # Permission requests that were NOT followed by execution
