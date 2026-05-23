@@ -8,6 +8,7 @@
 #   - PostToolUse (matcher: AskUserQuestion|Bash|Edit|Write|MultiEdit|WebFetch|Monitor|NotebookEdit|PowerShell|ShareOnboardingGuide|Skill)
 #   - PermissionRequest
 #   - PermissionDenied
+#   - Stop
 #
 # Log format: one JSON object per line at $HOME/.claude/logs/interactions.jsonl
 #   event values:
@@ -17,6 +18,8 @@
 #     permission_request       - permission dialog shown for a tool call
 #     tool_executed            - tool ran (correlate with permission_request -> user said OK)
 #     permission_denied        - tool call denied by classifier
+#     ai_response_end          - AI finished a response (Stop) - captures last assistant text
+#                                so terse user replies ("2", "yes") can be correlated to context
 #
 # OK/NG correlation:
 #   PermissionRequest followed by a tool_executed for the same session+tool ~= user said OK.
@@ -130,6 +133,37 @@ PermissionDenied)
     tool_input: .tool_input,
     reason: (.reason // "auto_mode_classifier")
   }'
+  ;;
+
+Stop)
+  # Extract the last assistant text message from the transcript so that terse
+  # follow-up prompts ("2", "yes") can be correlated to what was just offered.
+  # Truncate to 2000 chars to keep log size bounded.
+  TRANSCRIPT=$(printf '%s' "${INPUT}" | jq -r '.transcript_path // ""')
+  LAST_TEXT=""
+  if [ -n "${TRANSCRIPT}" ] && [ -f "${TRANSCRIPT}" ]; then
+    LAST_TEXT=$(jq -s -r '
+      map(select(.type == "assistant"))
+      | last
+      | (.message.content // [])
+      | map(select(.type == "text") | .text)
+      | join("\n")
+      | .[0:2000]
+    ' "${TRANSCRIPT}" 2>/dev/null || printf '')
+  fi
+  printf '%s' "${INPUT}" |
+    jq -c \
+      --arg ts "${TS}" \
+      --arg tp "${TRANSCRIPT}" \
+      --arg last "${LAST_TEXT}" \
+      '{
+          ts: $ts,
+          event: "ai_response_end",
+          session_id: .session_id,
+          cwd: .cwd,
+          transcript_path: $tp,
+          last_assistant_text: $last
+        }' >>"${LOG_FILE}" 2>/dev/null || true
   ;;
 esac
 

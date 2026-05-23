@@ -17,6 +17,7 @@ permission-dialog approval/denial — into a daily-rotated JSONL file.
 | `permission_request`   | A permission dialog is shown for a tool call          | `PermissionRequest`                              |
 | `tool_executed`        | A permission-required tool actually ran               | Used to infer user said **OK** (see below)       |
 | `permission_denied`    | A tool call is denied by the auto-mode classifier     | `PermissionDenied`                               |
+| `ai_response_end`      | The AI finished a response                            | `Stop` — captures last assistant text (≤2000 chars) so terse follow-ups ("2", "yes") can be correlated to the offered choices |
 
 Log location: `~/.claude/logs/interactions-YYYY-MM-DD.jsonl` (one line per event).
 
@@ -117,6 +118,6 @@ jq -s '
 
 `UserPromptSubmit`, `PreToolUse` (AskUserQuestion), `PostToolUse`
 (AskUserQuestion + permission-required tools), `PermissionRequest`,
-`PermissionDenied`.
+`PermissionDenied`, `Stop`.
 
 See `hooks/hooks.json` for the exact matcher strings.
