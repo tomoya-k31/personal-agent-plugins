@@ -23,6 +23,15 @@
       },
       "category": "meta",
       "source": "./plugins/skill-creator-x"
+    },
+    {
+      "name": "researcher",
+      "description": "Web, news, academic paper, financial report, company, people, lead-generation, code, and personal-site research via Exa and Brave Search APIs. Spawns a dedicated researcher agent to keep main conversation context clean.",
+      "author": {
+        "name": "tomoya-k31"
+      },
+      "category": "research",
+      "source": "./plugins/researcher"
     }
   ]
 }

@@ -1,0 +1,9 @@
+{
+  "name": "researcher",
+  "version": "0.5.0",
+  "description": "Web, news, academic paper, financial report, and company research via Exa and Brave Search APIs. Uses Python scripts instead of MCP tools to keep main conversation context clean.",
+  "author": {
+    "name": "tomoya-k31"
+  },
+  "keywords": ["search", "research", "exa", "brave", "deep-search"]
+}

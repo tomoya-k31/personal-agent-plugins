@@ -1,0 +1,5 @@
+# Renovate tracks these versions and opens PRs on updates.
+# Keep in sync with the `# /// script` inline deps in search.py.
+# Brave has no official Python SDK — requests is used for their REST API directly.
+exa-py>=2.13.0
+requests>=2.32.0
