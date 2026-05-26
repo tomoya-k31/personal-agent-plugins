@@ -5,8 +5,8 @@ Research plugin for Claude Code. Provides web, news, academic paper, financial r
 ## Usage
 
 ```
-/research <topic>
-/research deep search: <topic>
+/research <topic>          # single-round search
+/deep-search <topic>       # exhaustive multi-round Re-TRAC research
 ```
 
 ## Setup
@@ -58,23 +58,55 @@ For token-efficient deep research, the agent uses:
 
 See `skills/research/references/exa-contents-guide.md`.
 
-## Deep Search
+## Deep Search (`/deep-search`)
 
-Add "deep search:" prefix or "thoroughly"/"exhaustively" to trigger iterative multi-round research:
-- Round 1: Initial broad search
-- Gap analysis: What questions remain unanswered?
-- Round 2: Targeted follow-up queries
-- Round 3 (if needed): Fill remaining gaps
-- Final synthesis
+Exhaustive multi-round research lives in the **`deep-search` skill**, which uses
+the Re-TRAC (Recursive Trajectory Compression) protocol — each round emits a
+structured `state` JSON (evidence, source inventory, uncertainties, discarded
+directions) that conditions the next round, so the search converges instead of
+repeating itself. The `/research` skill stays single-round; deep/thorough/
+exhaustive requests route to `/deep-search`.
+
+The deep-search skill spawns this `researcher` agent with a Re-TRAC brief, so the
+multi-round search runs in the agent's context and only the final report returns
+to the main conversation. Per-round `state-rN.json` files are validated against
+`skills/deep-search/state-schema.json` by `skills/deep-search/scripts/validate_state.py`.
+
+### Background execution
+
+Background subagents cannot show permission prompts — they auto-deny any tool
+call that would prompt. To run `/deep-search` (or `/research`) unattended in the
+background, pre-approve its commands in `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(*scripts/setup.sh*)",
+      "Bash(*scripts/search.py *)",
+      "Bash(*scripts/contents.py *)",
+      "Bash(*deep-search/scripts/validate_state.py *)",
+      "Bash(mktemp -d *)",
+      "Write(/tmp/deep-search-*/**)"
+    ]
+  }
+}
+```
+
+Without these, run it in the **foreground** (the default), where you approve the
+prompts interactively. These rules are scoped to the research scripts; they do
+not broaden Bash access generally.
 
 ## Architecture
 
+- `scripts/setup.sh` — idempotent venv + dep install + key check (one approvable command)
 - `scripts/search.py` — unified search CLI (Exa SDK + requests for Brave REST)
 - `scripts/contents.py` — Exa Get Contents CLI for the two-step pattern
-- `agents/researcher.md` — coordinator agent (model: sonnet, spawned by skill)
-- `skills/research/SKILL.md` — entry point skill
-- `skills/research/references/` — API guides + deep search protocol
-- `skills/research/references/recipes/` — per-type parameter tuning (7 files)
+- `agents/researcher.md` — coordinator agent (model: sonnet, tools: Bash/Read/Write/Agent)
+- `skills/research/SKILL.md` — single-round research entry point
+- `skills/deep-search/` — Re-TRAC multi-round skill (SKILL.md, prompts/, state-schema.json, scripts/validate_state.py)
+- `skills/research/references/` — API guides + (legacy) deep search protocol
+- `skills/research/references/recipes/` — per-type parameter tuning (8 files)
 
 ## APIs Used
 
@@ -103,18 +135,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ## Project venv
 
 Scripts run inside a project-local venv at `plugins/researcher/.venv/`
-(git-ignored). The agent creates it on first use:
+(git-ignored). The agent creates it on first use via `scripts/setup.sh`:
 
 ```bash
-VENV="${CLAUDE_PLUGIN_ROOT}/.venv"
-REQS="${CLAUDE_PLUGIN_ROOT}/scripts/requirements.txt"
-if [ ! -x "$VENV/bin/python" ]; then
-  uv venv "$VENV"
-  uv pip install --python "$VENV/bin/python" -r "$REQS"
-fi
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh"
 ```
 
-All scripts are invoked as:
+It runs `uv venv` + `uv pip install` only when the venv is missing, then verifies
+API keys. All scripts are invoked as:
 ```bash
 "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/scripts/search.py" ...
 ```

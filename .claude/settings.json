@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(markitdown *)",
-      "mcp__exa__*"
+      "mcp__exa__*",
+      "Bash(mktemp -d *)",
+      "Bash(*scripts/setup.sh*)",
+      "Bash(*scripts/search.py *)",
+      "Bash(*scripts/contents.py *)",
+      "Bash(*deep-search/scripts/validate_state.py *)",
+      "Write(/tmp/deep-search-*/**)"
     ]
   },
   "hooks": {

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Re-TRAC State",
+  "description": "Structured state passed between Re-TRAC rounds. See compression-spec.md for authoring rules.",
+  "type": "object",
+  "required": ["round", "confidence", "evidence_base", "source_inventory", "uncertainties"],
+  "properties": {
+    "round": { "type": "integer", "minimum": 1 },
+    "confidence": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "current_answer": { "type": ["string", "null"] },
+    "answer_rationale": { "type": "string" },
+    "evidence_base": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "source_url", "verification"],
+        "properties": {
+          "claim": { "type": "string" },
+          "source_url": { "type": "string", "format": "uri" },
+          "verification": { "enum": ["verified", "unverified", "conflicting"] },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "source_inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url", "fetched_at", "content_quality"],
+        "properties": {
+          "url": { "type": "string", "format": "uri" },
+          "fetched_at": { "type": "string" },
+          "content_quality": { "enum": ["high", "medium", "low", "useless"] },
+          "summary": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["question", "priority"],
+        "properties": {
+          "question": { "type": "string" },
+          "priority": { "enum": ["high", "medium", "low"] },
+          "next_action": { "type": "string" },
+          "previous_attempts": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "discarded_directions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["direction", "reason"],
+        "properties": {
+          "direction": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "next_plan": { "type": "string" },
+    "audit": {
+      "type": "object",
+      "properties": {
+        "failed_attempts": { "type": "array", "items": { "type": "string" } },
+        "uncompleted_proposals": { "type": "array", "items": { "type": "string" } },
+        "discarded_possibilities": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

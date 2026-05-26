@@ -1,0 +1,23 @@
+{
+  "skill_name": "deep-search",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Conduct a deep investigation into the current state of open-source LLM development as of 2026. I need a comprehensive comparison of the top models — capabilities, licensing, hardware requirements, and community adoption trends.",
+      "expected_output": "A multi-section Markdown report with executive summary, per-model comparisons with inline citations, a Search Log showing at least 2 rounds, source list (≤30), and any unresolved items.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "徹底的に調査してください：日本のAIスタートアップの中で、2025年以降に大型資金調達を実施した主要5社の事業内容、強み、課題、競合優位性を比較してください。",
+      "expected_output": "Structured comparison report covering at least 4 companies, with evidence from Japanese and English sources, inline citations, Search Log, and a section for unresolved or low-confidence claims.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "What is the difference between supervised and unsupervised machine learning?",
+      "expected_output": "A direct explanation without spawning the researcher agent. This should NOT trigger deep-search — it is a factual definition question.",
+      "files": []
+    }
+  ]
+}

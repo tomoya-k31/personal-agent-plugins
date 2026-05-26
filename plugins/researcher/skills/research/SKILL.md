@@ -8,10 +8,9 @@ description: >
   "company background on", "financial reports for", "10-K for", "find code for",
   "find people who", "who is", "leads for", "ICP search", "companies that",
   "blogs about", or any phrase implying information retrieval from the web.
-  Deep search is triggered by "deep search", "deep research", "thorough research",
-  "exhaustive search", or "research thoroughly / exhaustively".
-  This skill spawns a researcher agent so all search API calls happen in a
-  separate context, keeping the main conversation clean.
+  For exhaustive multi-round investigations requiring iterative synthesis, use the
+  deep-search skill instead. This skill spawns a researcher agent so all search
+  API calls happen in a separate context, keeping the main conversation clean.
 ---
 
 # Research Skill
@@ -29,8 +28,8 @@ conversation stays clean.
    - **Topic**: what to research
    - **Search type**: web, news, paper, finance, company, people, lead, code,
      personal-site (infer from phrasing — see detection table below)
-   - **Depth**: shallow (default) or deep (if user says "deep", "thorough",
-     "exhaustive")
+   - **Depth**: shallow (single search round). For deep / thorough / exhaustive
+     requests, the deep-search skill handles those — do not route them here.
 
 2. Spawn the agent using the Agent tool with **exactly these parameters**:
    - `subagent_type: "researcher:researcher"`

@@ -7,7 +7,7 @@ description: |
   Do NOT invoke this agent directly — always use /research instead.
 model: sonnet
 color: cyan
-tools: Bash, Read, Agent
+tools: Bash, Read, Write, Agent
 ---
 
 You are a research coordinator. You receive a task that specifies:
@@ -23,24 +23,22 @@ content via `contents.py`, iterate if needed, and return a structured synthesis.
 
 ## Prerequisites (one-shot, idempotent)
 
+Run the setup script — it creates the venv if missing, installs deps, and
+verifies API keys in one command:
+
 ```bash
-command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not installed — curl -LsSf https://astral.sh/uv/install.sh | sh"; exit 1; }
-
-VENV="${CLAUDE_PLUGIN_ROOT}/.venv"
-REQS="${CLAUDE_PLUGIN_ROOT}/scripts/requirements.txt"
-if [ ! -x "$VENV/bin/python" ]; then
-  uv venv "$VENV"
-  uv pip install --python "$VENV/bin/python" -r "$REQS"
-fi
-
-"$VENV/bin/python" "<SCRIPT_PATH>" check-keys
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh"
 ```
 
-Stop on missing `uv` or non-zero exit from `check-keys`, telling the user which
-key is missing and how to set it.
+It prints `{"exa": "ok", "brave": "ok"}` on success. Stop on a non-zero exit
+(missing `uv`, or a missing API key) and tell the user which key to set.
 
-For every search command below, substitute `<PY>` with `"$VENV/bin/python"`
-(or the absolute path `${CLAUDE_PLUGIN_ROOT}/.venv/bin/python`).
+Packaging the prereq as one script keeps it allow-list-friendly: a single rule
+(`Bash(*scripts/setup.sh*)`) covers it, so background subagents run it without
+per-command permission prompts.
+
+For every search command below, substitute `<PY>` with
+`"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python"`.
 
 ## Provider Routing
 
@@ -70,6 +68,9 @@ cat "$(dirname '<SCRIPT_PATH>')/../skills/research/references/recipes/<TYPE>.md"
 
 **Deep:** Triggered when the task says "deep search", "thorough", "exhaustive", or
 "deep research". Follow `references/deep-search-protocol.md`.
+If the task brief explicitly specifies a different protocol (e.g., Re-TRAC via
+`skills/deep-search/prompts/retrac-protocol.md`), follow the brief's protocol
+instead and do not read `deep-search-protocol.md`.
 
 ## Two-Step Pattern for High Token Efficiency
 
